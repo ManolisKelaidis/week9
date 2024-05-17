@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <style>
+      .card {
+        border: 1px solid #ddd;
+        padding: 16px;
+        margin: 16px;
+        border-radius: 8px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+      }
+      .card-img {
+        width: 200px;
+        height: 200px;
+      }
+
+      h2 {
+        text-align: center;
+      }
+    </style>
+  </head>
+  <body>
+    <section id="main-content"></section>
+  </body>
+  <script>
+    const section = document.getElementById("main-content");
+    console.log(section);
+
+    function drawCards(data) {
+      data.map((item) => {
+        console.log(item);
+        const card = document.createElement("div");
+        card.className = "card";
+        card.innerHTML = `
+            <h2>${item.data.title}</h2>
+            <p><strong>Artist:</strong> ${
+              item.data.artist_title ? item.data.artist_title : "Unknown"
+            }</p>
+            <img class="card-img" src="https://www.artic.edu/iiif/2/${
+              item.data.image_id
+            }/full/843,/0/default.jpg" alt="${item.data.title}">
+           
+            
+        `;
+        section.appendChild(card);
+      });
+    }
+    const getDate = async () => {
+      const requests = [
+        fetch(`https://api.artic.edu/api/v1/artworks/129883`),
+        fetch(`https://api.artic.edu/api/v1/artworks/129884`),
+        fetch(`https://api.artic.edu/api/v1/artworks/129885`),
+      ];
+
+      try {
+        const results = await Promise.all(requests);
+        const data = await Promise.all(results.map((res) => res.json()));
+        console.log(data);
+
+        drawCards(data);
+      } catch (error) {
+        alert("Error fetching the data");
+      }
+    };
+
+    getDate();
+  </script>
+</html>
